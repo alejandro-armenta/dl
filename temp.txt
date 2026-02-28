@@ -1,0 +1,14 @@
+
+
+x ---------
+
+out = conv1(x)     |
+
+out = conv2(out)     |
+
+out = downsample(out)
+
+-----------
+y = x + f(x)
+
+relu(y)
