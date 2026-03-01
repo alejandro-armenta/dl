@@ -60,8 +60,9 @@ class ResNet(nn.Module):
         downsample = None
 
         if stride != 1 or self.inplanes != planes:
+
             downsample = nn.Sequential(
-                nn.Conv2d(self.inplanes,planes,kernel_size=1,stride=stride),
+                nn.Conv2d(self.inplanes, planes, kernel_size=1, stride=stride),
                 nn.BatchNorm2d(planes)
             )
 
@@ -71,6 +72,8 @@ class ResNet(nn.Module):
             block(in_channels=self.inplanes, out_channels=planes, stride=stride, downsample=downsample)
         )
         
+        self.inplanes = planes
+
         for i in range(1, blocks):
             layers.append(
                 block(in_channels=self.inplanes, out_channels=planes)
@@ -79,15 +82,54 @@ class ResNet(nn.Module):
         return nn.Sequential(*layers)
 
     def __init__(self, block, layers, num_classes=10):
-        super().__init__()
+        super(ResNet, self).__init__()
         
         self.inplanes = 64
-        self.make_layer(block=block, planes=64, blocks=layers[0])
-        #self.make_layer(layers[1])
-        #self.make_layer(layers[2])
-        #self.make_layer(layers[3])
+
+        self.conv1 = nn.Sequential(
+
+            nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3),
+            nn.BatchNorm2d(64),
+            nn.ReLU()
+
+        )
+
+        self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
+
+        self.layer0 = self.make_layer(block=block, planes=64, blocks=layers[0], stride=1)
+
+        self.layer1 = self.make_layer(block=block, planes=128, blocks=layers[1], stride=2)
         
-        nn.Linear(in_features=512,out_features=num_classes)
+        self.layer2 = self.make_layer(block=block, planes=256, blocks=layers[2], stride=2)
+        
+        self.layer3 = self.make_layer(block=block, planes=512, blocks=layers[3], stride=2)
+        
+        self.avgpool = nn.AvgPool2d(kernel_size=7, stride=1)
+
+        self.fc = nn.Linear(in_features=512,out_features=num_classes)
+
+    def forward(self, x):
+        
+        x = self.conv1(x)
+        x = self.maxpool(x)
+        
+        x = self.layer0(x)
+
+        #aqui vas
+        x = self.layer1(x)
+
+        x = self.layer2(x)
+        x = self.layer3(x)
+
+        x = self.avgpool(x)
+
+        x = x.view(x.size(0), -1)
+
+        x = self.fc(x)
+
+        return x
 
 
-ResNet(ResidualBlock, [3,4,6,3])
+#a = ResNet(ResidualBlock, [3,4,6,3])
+
+

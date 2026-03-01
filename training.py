@@ -1,3 +1,5 @@
+from tqdm import tqdm
+
 import numpy as np
 
 import torch
@@ -13,7 +15,14 @@ from torch.utils.data.sampler import SubsetRandomSampler
 
 from torch.utils.data import DataLoader
 
+from resnet import ResNet, ResidualBlock
+
+import gc
+
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+torch.cuda.empty_cache()
+gc.collect()
 
 print(device)
 
@@ -33,7 +42,7 @@ def data_loader(data_dir, batch_size, test=False, shuffle=True, valid_size=0.1):
 
     if test:
         test_dataset = datasets.CIFAR10(root=data_dir, download=True, train=False, transform=t)
-        print(test_dataset)
+        #print(test_dataset)
         data_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=shuffle)
         return data_loader
 
@@ -56,7 +65,7 @@ def data_loader(data_dir, batch_size, test=False, shuffle=True, valid_size=0.1):
     train_sampler = SubsetRandomSampler(train_indices)
     val_sampler = SubsetRandomSampler(val_indices)
 
-    print(train_dataset is valid_dataset)
+    #print(train_dataset is valid_dataset)
 
     train_loader = DataLoader(train_dataset, batch_size=batch_size, sampler=train_sampler)
     valid_loader = DataLoader(valid_dataset, batch_size=batch_size, sampler=val_sampler)
@@ -67,5 +76,44 @@ def data_loader(data_dir, batch_size, test=False, shuffle=True, valid_size=0.1):
 train_loader, valid_loader = data_loader('./data', batch_size=64)
 test_loader = data_loader('./data', batch_size=64, test=True)
 
+model = ResNet(ResidualBlock, [3,4,6,3]).to(device=device)
+
+criterion = nn.CrossEntropyLoss()
+
+num_epochs = 1
+learnin_rate = 0.01
+
+#ay un weight decay en sgd
+optimizer = torch.optim.SGD(model.parameters(), lr=learnin_rate, weight_decay=0.001, momentum=0.9)
+
+print(len(train_loader) * num_epochs)
 
 
+
+for epoch in range(num_epochs):
+
+    loader = tqdm(train_loader)
+    
+    for images, labels in loader:
+
+        images = images.to(device)
+        labels = labels.to(device)
+
+        pred = model(images)
+
+        #print(pred.shape)
+        loss = criterion(pred, labels)
+
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+        del images, labels, pred
+        torch.cuda.empty_cache()
+        gc.collect()
+        
+
+
+
+
+        
