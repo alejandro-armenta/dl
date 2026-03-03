@@ -20,6 +20,9 @@ model = ResNet(ResidualBlock, [3,4,6,3]).to(device=device)
 
 model.load_state_dict(chech['model_state_dict'])
 
+print(model)
+
+"""
 with torch.no_grad():
     
     correct = 0
@@ -34,8 +37,11 @@ with torch.no_grad():
         labels = labels.to(device)
 
         outputs = model(images)
+
         _, predicted = torch.max(outputs.data, 1)
+
         total += labels.size(0)
+        
         correct += (predicted == labels).sum().item()
 
         del images, labels, outputs
@@ -43,3 +49,4 @@ with torch.no_grad():
         torch.cuda.empty_cache()
     
     print('Accuracy of the network on the {} test images: {} %'.format(10000, 100 * correct / total))
+"""

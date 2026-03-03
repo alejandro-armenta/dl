@@ -1,0 +1,315 @@
+ResNet(
+  (conv1): Sequential(
+
+    #batch, in_channels, 224, 224
+            
+    #batch, out_channels, 112, 112
+
+    (0): Conv2d(3, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3))
+    (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+  )
+
+  #batch, 64, 112, 112
+  
+  #batch, 64, 56, 56
+
+  se alarga y luego al final se acorta
+
+  (maxpool): MaxPool2d(kernel_size=3, stride=2, padding=1, dilation=1, ceil_mode=False)
+
+    en la primera capa no se hace downsample
+  (layer0): Sequential(
+
+    (0): ResidualBlock(
+
+      (conv1): Sequential(
+
+        #batch, 64, 56, 56
+
+        #batch, 64, 56, 56
+
+        (0): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+
+        (2): ReLU()
+      )
+
+      (conv2): Sequential(
+
+        #batch, 64, 56, 56
+
+        #batch, 64, 56, 56
+
+        (0): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+
+      )
+      (relu): ReLU()
+    )
+
+    (1): ResidualBlock(
+
+      (conv1): Sequential(
+        #batch, 64, 56, 56
+
+        #batch, 64, 56, 56
+
+        (0): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+
+      (conv2): Sequential(
+        #batch, 64, 56, 56
+
+        #batch, 64, 56, 56
+
+        (0): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+
+      )
+
+      (relu): ReLU()
+    )
+    (2): ResidualBlock(
+      (conv1): Sequential(
+        #batch, 64, 56, 56
+
+        #batch, 64, 56, 56
+
+        (0): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+
+        (2): ReLU()
+      )
+      (conv2): Sequential(
+        #batch, 64, 56, 56
+
+        #batch, 64, 56, 56
+
+        (0): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+
+      )
+      (relu): ReLU()
+    )
+  )
+
+  (layer1): Sequential(
+
+    (0): ResidualBlock(
+
+      (conv1): Sequential(
+
+        #batch, 64, 56, 56
+
+        #batch, 128, 28, 28 
+
+        (0): Conv2d(64, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+
+        (1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+
+        (2): ReLU()
+      )
+
+      (conv2): Sequential(
+
+
+        #batch, 128, 28, 28 
+
+        OUT
+        #batch, 128, 28, 28 
+
+        (0): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+
+        (1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+
+      (downsample): Sequential(
+
+        #batch, 64, 56, 56
+
+        OUT
+        #batch, 128, 28, 28 
+
+        RESIDUAL
+        #batch, 128, 28, 28
+
+        OUT
+        #batch, 128, 28, 28 
+
+        el kernel es diferent porque no hace convolucion solo sample -- 2 
+        (0): Conv2d(64, 128, kernel_size=(1, 1), stride=(2, 2))
+
+        (1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+
+      )
+
+      (relu): ReLU()
+    )
+    (1): ResidualBlock(
+      (conv1): Sequential(
+        (0): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (conv2): Sequential(
+        (0): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (relu): ReLU()
+    )
+    (2): ResidualBlock(
+      (conv1): Sequential(
+        (0): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (conv2): Sequential(
+        (0): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (relu): ReLU()
+    )
+    (3): ResidualBlock(
+      (conv1): Sequential(
+        (0): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (conv2): Sequential(
+        (0): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (relu): ReLU()
+    )
+  )
+  (layer2): Sequential(
+    (0): ResidualBlock(
+      (conv1): Sequential(
+        (0): Conv2d(128, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+        (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (conv2): Sequential(
+        (0): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (downsample): Sequential(
+        (0): Conv2d(128, 256, kernel_size=(1, 1), stride=(2, 2))
+        (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (relu): ReLU()
+    )
+    (1): ResidualBlock(
+      (conv1): Sequential(
+        (0): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (conv2): Sequential(
+        (0): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (relu): ReLU()
+    )
+    (2): ResidualBlock(
+      (conv1): Sequential(
+        (0): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (conv2): Sequential(
+        (0): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (relu): ReLU()
+    )
+    (3): ResidualBlock(
+      (conv1): Sequential(
+        (0): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (conv2): Sequential(
+        (0): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (relu): ReLU()
+    )
+    (4): ResidualBlock(
+      (conv1): Sequential(
+        (0): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (conv2): Sequential(
+        (0): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (relu): ReLU()
+    )
+    (5): ResidualBlock(
+      (conv1): Sequential(
+        (0): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (conv2): Sequential(
+        (0): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (relu): ReLU()
+    )
+  )
+  (layer3): Sequential(
+    (0): ResidualBlock(
+      (conv1): Sequential(
+        (0): Conv2d(256, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+        (1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (conv2): Sequential(
+        (0): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (downsample): Sequential(
+        (0): Conv2d(256, 512, kernel_size=(1, 1), stride=(2, 2))
+        (1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (relu): ReLU()
+    )
+    (1): ResidualBlock(
+      (conv1): Sequential(
+        (0): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (conv2): Sequential(
+        (0): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (relu): ReLU()
+    )
+    (2): ResidualBlock(
+      (conv1): Sequential(
+        (0): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (conv2): Sequential(
+        (0): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (relu): ReLU()
+    )
+  )
+  (avgpool): AvgPool2d(kernel_size=7, stride=1, padding=0)
+  (fc): Linear(in_features=512, out_features=10, bias=True)
+)

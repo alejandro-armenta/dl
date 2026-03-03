@@ -35,19 +35,20 @@ class ResidualBlock(nn.Module):
         self.out_channels = out_channels
 
     def forward(self, x):
-
-        out = self.conv1(x)
-        out = self.conv2(out)
         
-        residual = x
+        #skip connection
+
+        residual = self.conv1(x)
+        residual = self.conv2(residual)
+
         if self.downsample:
-            residual = self.downsample(residual)
+            x_ = self.downsample(x)
         
-        out += residual
+        result = x_ + residual
         
-        out = self.relu(out)
+        result = self.relu(result)
 
-        return out
+        return result
 
 #ResidualBlock(3,3)
 
@@ -55,6 +56,7 @@ class ResidualBlock(nn.Module):
 class ResNet(nn.Module):
 
     def make_layer(self, block, planes, blocks, stride=1):
+        
         downsample = None
 
         if stride != 1 or self.inplanes != planes:
@@ -85,13 +87,27 @@ class ResNet(nn.Module):
         self.inplanes = 64
 
         self.conv1 = nn.Sequential(
+            #esto realmente significa que entran a color y salen en 64
+            #entra a color y salen 64 channels 
+            
+
+            #batch, in_channels, 224, 224
+            
+            #batch, out_channels, 112, 112
 
             nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3),
+
             nn.BatchNorm2d(64),
+
             nn.ReLU()
 
         )
 
+        #batch, 64, 112, 112
+
+        #batch, 64, 56, 56
+
+        #picks the most prominent feature
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
 
         self.layer0 = self.make_layer(block=block, planes=64, blocks=layers[0], stride=1)
@@ -121,6 +137,7 @@ class ResNet(nn.Module):
 
         x = self.avgpool(x)
 
+        #flatten, batch size
         x = x.view(x.size(0), -1)
 
         x = self.fc(x)
