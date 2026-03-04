@@ -14,6 +14,6 @@ The model makes 85% accuracy on validation data.
 
 Here you can look at the feature map from some layers into the model:
 
-![ale]('real_features.png')
+![ale](real_features.png)
 
 
