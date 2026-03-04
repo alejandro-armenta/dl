@@ -4,6 +4,8 @@ This is a ResNet i made from scratch. I used Pytorch and Python to make the neur
 
 I trained the model on CIFAR10 to classify images into 10 classes.
 
+![ale](training.png)
+
 I used residual connections to make the model train better.
 
 I used convolutional layers to get features from images.
