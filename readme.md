@@ -2,9 +2,9 @@
 
 This is a ResNet i made from scratch. I used Pytorch and Python to make the neural network.
 
-I trained the model on CIFAR10 to classify images into 10 classes.
+I trained the model on CIFAR10 to classify images into 10 classes. These are the classes:
 
-![ale](training.png)
+![ale](cifar10.png)
 
 I used residual connections to make the model train better.
 
@@ -14,7 +14,9 @@ The architecture is reducing the layer sizes across the model making a pyramid w
 
 The model makes 85% accuracy on validation data.
 
-Here you can look at the feature map from some layers into the model:
+![ale](training.png)
+
+Here you can look at the feature map from some layers into the model. The original image is a cat.
 
 ![ale](real_features.png)
 
