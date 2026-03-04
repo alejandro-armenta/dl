@@ -6,21 +6,37 @@ from utils import data_loader
 
 from resnet import ResNet, ResidualBlock
 
+from torchvision.models.feature_extraction import get_graph_node_names, create_feature_extractor
+
 import gc
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-test_loader = data_loader('./data', batch_size=64, test=True)
+
+test_dataset = datasets.CIFAR10(root='./data', download=True, train=False, transform=t)
 
 chech = torch.load('best_model.pt', map_location=device)
 
-print(chech['accuracy'])
+#print(chech['accuracy'])
 
 model = ResNet(ResidualBlock, [3,4,6,3]).to(device=device)
 
 model.load_state_dict(chech['model_state_dict'])
 
-print(model)
+#print(model)
+
+train_mode, eval_mode = get_graph_node_names(model)
+
+#print(train_mode)
+
+return_nodes = {
+    'conv1.2':'feature_map_0'
+    }
+
+other_model = create_feature_extractor(model=model, return_nodes=return_nodes)
+
+print(other_model)
+
 
 """
 with torch.no_grad():
